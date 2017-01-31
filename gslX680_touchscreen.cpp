@@ -44,9 +44,11 @@ int GSLx680Touchscreen::getNumTouches() {
 			uint8_t offs = 4;
 			for (int n = 0; n < numTouches; ++n, offs += 4) {
 				uint16_t fy = extr16(buf + offs + 2);
-				int finger = fy >> 12;
-				touches[finger][0] = extr16(buf + offs);
-				touches[finger][1] = fy & ((uint16_t(1) << 12) - 1);
+				int finger = (fy >> 12) - 1;
+				if ((finger >= 0) && (finger < MAX_TOUCHES)) {
+					touches[finger][0] = extr16(buf + offs);
+					touches[finger][1] = fy & ((uint16_t(1) << 12) - 1);
+				}
 			}
 		}
 		else {
